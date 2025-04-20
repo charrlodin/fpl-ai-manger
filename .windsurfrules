@@ -1,0 +1,55 @@
+# FPL AI Manager Project Rules
+
+<project_structure>
+
+- This project uses Next.js 14 with TypeScript and App Router
+- UI components come from shadcn/ui library
+- Authentication is handled exclusively through Clerk
+- All database operations use Supabase with Prisma ORM
+- State management uses Zustand for client-side state
+  </project_structure>
+
+<development_approach>
+
+- UI/UX first: Complete the full UI before implementing backend functionality
+- Each ticket should produce a complete, working feature
+- Tasks must be completed in sequence - no dependencies on future tickets
+- Prefer small, focused PRs over large changes
+  </development_approach>
+
+<styling>
+- Use the `primary` color defined in the global CSS file with the `@tailwind theme` directive (see Tailwind v4 docs).
+- Font family is Michroma via Google Fonts, assigned with `var(--font-sans)`.
+- Use Shadcn's `<Button />`, `<Card />`, etc. when building UI.
+- Prefer Shadcn's utility-based variants and avoid unnecessary custom CSS.
+- All Tailwind customizations (colors, breakpoints, plugins, prefix, etc.) must be added to the global CSS file using `@tailwind` directives, not in a config file.
+</styling>
+
+<technical_constraints>
+
+- Use Tailwind CSS for all styling, no custom CSS files
+- Only use shadcn/ui components for UI elements
+- Store all environment variables in .env.local
+- All API routes should be implemented as Next.js API routes
+- Use SWR for data fetching with proper loading states
+  </technical_constraints>
+
+<api_integration>
+
+- FPL data comes from the official Fantasy Premier League API:
+  - Bootstrap data: https://fantasy.premierleague.com/api/bootstrap-static/
+  - Fixtures: https://fantasy.premierleague.com/api/fixtures/
+  - Team details: https://fantasy.premierleague.com/api/entry/{entry_id}/event/{gw}/picks/
+  - Team history: https://fantasy.premierleague.com/api/entry/{entry_id}/history/
+  - League standings: https://fantasy.premierleague.com/api/leagues-classic/{league_id}/standings/
+  - Transfers: https://fantasy.premierleague.com/api/transfers/
+- Price predictions should use LiveFPL's methodology
+  </api_integration>
+
+<task_management>
+
+- Break all work into small, achievable tasks
+- Each task should be completable in one sitting
+- Follow the defined epic order without skipping ahead
+- Complete one epic entirely before starting the next
+  </task_management>
