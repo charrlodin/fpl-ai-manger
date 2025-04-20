@@ -78,15 +78,24 @@ export function useFixtures(gameweek?: number) {
 export function useLeagueStandings(leagueId?: number, page: number = 1) {
   const shouldFetch = !!leagueId;
   
-  const { data, error, isLoading } = useSWR(
-    shouldFetch ? `/api/fpl/league/${leagueId}?page=${page}` : null,
-    fetcher
+  const { data, error, isLoading, mutate } = useSWR(
+    shouldFetch ? `/api/fpl/leagues/${leagueId}?page=${page}` : null,
+    fetcher,
+    { 
+      refreshInterval: LIVE_REFRESH_INTERVAL * 2, // Less frequent than points
+      revalidateOnFocus: true
+    }
   );
   
   return {
     leagueData: data,
+    standings: data?.standings?.results || [],
+    leagueInfo: data?.league || null,
+    hasNext: data?.standings?.has_next || false,
+    page: data?.standings?.page || 1,
     isLoading,
-    isError: error
+    isError: error,
+    refreshData: mutate
   };
 }
 
@@ -110,6 +119,61 @@ export function useLivePoints(entryId?: number) {
     livePoints: data?.livePoints,
     gameweek: data?.gameweek,
     lastUpdated: data?.lastUpdated,
+    isLoading,
+    isError: error,
+    refreshData: mutate
+  };
+}
+
+/**
+ * Hook to fetch all leagues for a team
+ */
+export function useTeamLeagues(entryId?: number) {
+  const shouldFetch = !!entryId;
+  
+  const { data, error, isLoading, mutate } = useSWR(
+    shouldFetch ? `/api/fpl/team-leagues/${entryId}` : null,
+    fetcher,
+    { 
+      refreshInterval: LIVE_REFRESH_INTERVAL * 4, // Less frequent updates
+      revalidateOnFocus: true
+    }
+  );
+  
+  return {
+    leagues: data,
+    classicLeagues: data?.classic || [],
+    h2hLeagues: data?.h2h || [],
+    cupInfo: data?.cup,
+    isLoading,
+    isError: error,
+    refreshData: mutate
+  };
+}
+
+/**
+ * Hook to fetch safety score - points needed to avoid dropping in rank
+ */
+export function useSafetyScore(entryId?: number) {
+  const shouldFetch = !!entryId;
+  
+  const { data, error, isLoading, mutate } = useSWR(
+    shouldFetch ? `/api/fpl/safety-score/${entryId}` : null,
+    fetcher,
+    { 
+      refreshInterval: LIVE_POINTS_REFRESH_INTERVAL, // Update frequently during live games
+      revalidateOnFocus: true,
+      dedupingInterval: 5000
+    }
+  );
+  
+  return {
+    safetyData: data,
+    safetyScore: data?.safetyScore,
+    arrowDirection: data?.arrowDirection,
+    currentGwPoints: data?.currentGwPoints,
+    averageScore: data?.averageScore,
+    statusMessage: data?.statusMessage,
     isLoading,
     isError: error,
     refreshData: mutate

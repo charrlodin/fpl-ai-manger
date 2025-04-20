@@ -109,10 +109,12 @@ export const mockTeamData = {
 };
 
 /**
- * Format currency value from API (80.5) to display format (£80.5m)
+ * Format currency value from API to display format
+ * Note: The team value is already processed in the API to be in millions
  */
 export function formatCurrency(value: number): string {
-  return `£${value}m`;
+  // Display the value with 1 decimal place, don't divide by 10 again
+  return `£${value.toFixed(1)}m`;
 }
 
 /**

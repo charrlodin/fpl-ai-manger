@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Home, TrendingUp, Users, Settings, Menu, Trophy, Zap } from "lucide-react";
+import { Home, TrendingUp, Users, Settings, Menu, Trophy, Zap, UserCircle, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -64,7 +64,12 @@ export function Sidebar({ className }: SidebarProps) {
 
           <SignedIn>
             <div className="mt-8 space-y-1">
-              <NavItem href="/sign-out">
+              <Separator className="my-4 bg-white/20" />
+              <h2 className="mb-2 pl-4 text-lg font-semibold tracking-tight text-white">Account</h2>
+              <NavItem href="/profile" icon={<UserCircle className="mr-2 h-4 w-4" />}>
+                Profile
+              </NavItem>
+              <NavItem href="/sign-out" icon={<LogOut className="mr-2 h-4 w-4" />}>
                 Sign Out
               </NavItem>
             </div>

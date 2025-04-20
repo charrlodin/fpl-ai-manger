@@ -39,17 +39,29 @@ export async function GET(request: NextRequest) {
     const teamValue = teamGameweekData.entry_history?.value / 10 || 0;
     const bank = teamGameweekData.entry_history?.bank / 10 || 0;
     
+    // Find the latest gameweek data to get current rank
+    const latestGameweek = teamHistoryData.current?.length > 0 ? 
+      teamHistoryData.current[teamHistoryData.current.length - 1] : null;
+    
     // Combine the data
     const combinedData = {
       current: teamGameweekData,
       history: teamHistoryData,
+      chips: teamHistoryData.chips || [],
+      pastSeasons: teamHistoryData.past || [],
       teamInfo: {
+        teamName: teamGameweekData.entry?.name || 'Unknown Team',
+        playerName: teamGameweekData.entry?.player_name || 'Unknown Manager',
         teamValue,
         bank,
         totalValue: teamValue + bank,
-        overallRank: teamHistoryData.entry?.overall_rank,
+        overallRank: latestGameweek?.overall_rank || teamHistoryData.entry?.overall_rank,
         gameweekPoints: teamGameweekData.entry_history?.points,
-        totalPoints: teamHistoryData.entry?.total_points,
+        totalPoints: latestGameweek?.total_points || teamHistoryData.entry?.total_points,
+        gameweekRank: latestGameweek?.rank,
+        startedGW: teamHistoryData.current?.[0]?.event || 1,
+        transfers: teamGameweekData.entry_history?.event_transfers || 0,
+        transferCost: teamGameweekData.entry_history?.event_transfers_cost || 0,
         currentGameweek
       }
     };
